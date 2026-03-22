@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cherch'Emploi</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Lora:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ac:#2563EB;--acl:#EFF6FF;--acd:#1D4ED8;--acm:#93C5FD;
+  --gn:#16A34A;--gnl:#F0FDF4;--pu:#7C3AED;--sl:#1E293B;
+  --g1:#F3F4F6;--g2:#E5E7EB;
+  --tx:#111827;--tm:#6B7280;--th:#9CA3AF;
+  --bd:rgba(0,0,0,0.08);--bm:rgba(0,0,0,0.13);
+  --sf:#fff;--bg:#F9FAFB;--r:14px;--rs:8px;--rp:999px;
+  --sh:0 1px 3px rgba(0,0,0,0.07);
+}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;font-size:15px;line-height:1.6}
+.app{display:flex;min-height:100vh}
+.sb{width:230px;background:var(--sf);border-right:1px solid var(--bd);padding:1.5rem 1rem;display:flex;flex-direction:column;gap:1.5rem;position:fixed;top:0;left:0;bottom:0;z-index:10;box-shadow:var(--sh)}
+.logo{display:flex;align-items:center;gap:10px;padding:4px 6px}
+.lm{width:32px;height:32px;border-radius:10px;background:var(--ac);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.lm svg{width:16px;height:16px;fill:white}
+.lt{font-family:'Lora',serif;font-size:18px;color:var(--tx)}
+.lt span{font-style:italic;color:var(--ac)}
+.ns{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--th);padding:8px 12px 4px}
+nav{display:flex;flex-direction:column;gap:3px}
+.ni{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--rs);font-size:14px;color:var(--tm);cursor:pointer;transition:all .15s;border:none;background:none;width:100%;text-align:left;font-family:'Outfit',sans-serif}
+.ni:hover{background:var(--g1);color:var(--tx)}
+.ni.active{background:var(--acl);color:var(--ac);font-weight:500}
+.ni svg{width:16px;height:16px;flex-shrink:0}
+.nb{margin-left:auto;background:var(--ac);color:white;font-size:10px;font-weight:600;padding:2px 7px;border-radius:var(--rp)}
+.sb-bot{margin-top:auto}
+.up{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--rs);background:var(--g1)}
+.av{width:32px;height:32px;border-radius:50%;background:var(--acl);color:var(--ac);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.un{font-size:13px;font-weight:500}
+.pb{font-size:10px;color:var(--ac);background:var(--acl);padding:1px 7px;border-radius:4px;display:inline-block;margin-top:1px}
+.main{margin-left:230px;flex:1;padding:2rem 2.5rem;max-width:960px}
+.page{display:none}.page.active{display:block}
+.ph{margin-bottom:1.75rem}
+.pt{font-family:'Lora',serif;font-size:26px;color:var(--tx);margin-bottom:4px}
+.ps{font-size:13px;color:var(--tm)}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:1.25rem;margin-bottom:1.25rem;box-shadow:var(--sh)}
+.ct{font-size:14px;font-weight:500;margin-bottom:1rem;display:flex;align-items:center;gap:8px;color:var(--tx)}
+.ct svg{width:15px;height:15px;color:var(--ac);flex-shrink:0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fi{display:flex;flex-direction:column;gap:5px}
+.fi label{font-size:12px;color:var(--tm);font-weight:500}
+.fi input,.fi select,.fi textarea{padding:9px 11px;border:1px solid var(--bm);border-radius:var(--rs);font-size:13px;font-family:'Outfit',sans-serif;color:var(--tx);background:var(--bg);outline:none;transition:border .15s}
+.fi input:focus,.fi select:focus,.fi textarea:focus{border-color:var(--ac);background:white}
+.fi textarea{resize:vertical;min-height:100px;line-height:1.6}
+.rw{display:flex;align-items:center;gap:10px;margin-top:4px}
+.rw input[type=range]{flex:1;accent-color:var(--ac)}
+.rv{font-size:13px;font-weight:500;color:var(--ac);min-width:44px;text-align:right}
+.pbtn{padding:10px 22px;background:var(--ac);color:white;border:none;border-radius:var(--rs);font-size:14px;font-weight:500;cursor:pointer;font-family:'Outfit',sans-serif;transition:background .15s;display:inline-flex;align-items:center;gap:8px}
+.pbtn:hover{background:var(--acd)}
+.pbtn:disabled{background:var(--g2);cursor:not-allowed;color:var(--tm)}
+.sbtn{padding:8px 16px;background:none;color:var(--tm);border:1px solid var(--bm);border-radius:var(--rs);font-size:13px;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .15s}
+.sbtn:hover{background:var(--g1);color:var(--tx)}
+/* Sources tabs */
+.src-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.25rem}
+.src-tab{padding:7px 14px;border-radius:var(--rp);border:1px solid var(--bm);font-size:13px;cursor:pointer;background:var(--sf);color:var(--tm);font-family:'Outfit',sans-serif;transition:all .15s;display:flex;align-items:center;gap:6px}
+.src-tab:hover{border-color:var(--acm);color:var(--ac)}
+.src-tab.active{background:var(--ac);color:white;border-color:var(--ac);font-weight:500}
+.src-tab .dot{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.6}
+/* Upload */
+.tabs{display:flex;gap:0;margin-bottom:1rem;border:1px solid var(--bm);border-radius:var(--rs);overflow:hidden;width:fit-content}
+.tab{padding:7px 16px;font-size:13px;cursor:pointer;background:none;border:none;font-family:'Outfit',sans-serif;color:var(--tm);transition:all .15s}
+.tab.active{background:var(--ac);color:white;font-weight:500}
+.tab:hover:not(.active){background:var(--g1);color:var(--tx)}
+.uz{border:2px dashed var(--bm);border-radius:var(--r);padding:1.5rem;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg)}
+.uz:hover,.uz.drag{border-color:var(--ac);background:var(--acl)}
+.uz.done{border-color:var(--gn);background:var(--gnl);border-style:solid}
+.ui{font-size:24px;margin-bottom:6px}
+.ut{font-size:13px;color:var(--tm)}
+.ut strong{color:var(--tx);font-weight:500}
+.un2{font-size:13px;font-weight:500;color:var(--gn);margin-top:6px}
+input[type=file]{display:none}
+.cv-status{margin-top:10px;padding:10px 12px;border-radius:var(--rs);font-size:13px;display:none;align-items:center;gap:8px}
+.cv-status.ok{display:flex;background:var(--gnl);color:var(--gn)}
+.cv-status.err{display:flex;background:#FEF2F2;color:#DC2626}
+.cv-status.loading{display:flex;background:var(--acl);color:var(--acd)}
+/* Offres */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:1.5rem}
+.sc{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:1rem 1.25rem;box-shadow:var(--sh)}
+.sl2{font-size:11px;color:var(--tm);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em}
+.sv{font-size:28px;font-weight:600;color:var(--tx);line-height:1}
+.ss{font-size:12px;color:var(--gn);margin-top:4px}
+.ol{display:flex;flex-direction:column;gap:10px}
+.oc{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:1rem 1.25rem;display:flex;gap:12px;align-items:flex-start;transition:all .15s;animation:fadeIn .25s ease both;box-shadow:var(--sh)}
+.oc:hover{border-color:var(--acm);transform:translateY(-1px);box-shadow:0 4px 12px rgba(37,99,235,.08)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.oc-logo{width:44px;height:44px;border-radius:10px;background:var(--acl);color:var(--ac);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;letter-spacing:0}
+.ob{flex:1;min-width:0}
+.oti{font-size:14px;font-weight:500;margin-bottom:3px;color:var(--tx)}
+.oco{font-size:13px;color:var(--tm);margin-bottom:8px}
+.otg{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-size:11px;padding:2px 9px;border-radius:var(--rp);border:1px solid var(--bd);color:var(--tm);background:var(--bg)}
+.tag.cdi{background:#F0FDF4;color:#15803D;border-color:#BBF7D0}
+.tag.cdd{background:#FEF9C3;color:#854D0E;border-color:#FDE68A}
+.tag.mis{background:#FEF9C3;color:#854D0E;border-color:#FDE68A}
+.tag.src-ft{background:#E8F5E9;color:#2E7D32;border:none}
+.tag.src-indeed{background:#E3F2FD;color:#1565C0;border:none}
+.tag.src-apec{background:#FFF3E0;color:#E65100;border:none}
+.tag.src-hellowork{background:#F3E5F5;color:#6A1B9A;border:none}
+.tag.src-jobijoba{background:#FCE4EC;color:#880E4F;border:none}
+.tag.src-linkedin{background:#E1F0FF;color:#0A66C2;border:none}
+.or2{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
+.voir-btn{padding:6px 14px;background:var(--ac);color:white;border:none;border-radius:var(--rs);font-size:12px;font-weight:500;cursor:pointer;font-family:'Outfit',sans-serif;transition:background .15s;text-decoration:none;display:inline-block;white-space:nowrap}
+.voir-btn:hover{background:var(--acd)}
+.od{font-size:11px;color:var(--th);margin-top:2px;text-align:right}
+.oa{display:flex;gap:6px;margin-top:8px}
+.ab{padding:4px 10px;border-radius:var(--rs);border:1px solid var(--bm);font-size:11px;cursor:pointer;background:none;color:var(--tm);font-family:'Outfit',sans-serif;transition:all .15s}
+.ab:hover{background:var(--acl);color:var(--ac);border-color:var(--acm)}
+.sp{width:15px;height:15px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.es{text-align:center;padding:3rem 1rem;color:var(--tm)}
+.ei{font-size:36px;margin-bottom:.75rem}
+.et{font-size:15px;font-weight:500;color:var(--tx);margin-bottom:4px}
+.err-box{background:#FEF2F2;border:1px solid #FECACA;border-radius:var(--rs);padding:12px 14px;font-size:13px;color:#B91C1C;margin-bottom:1rem;display:none}
+.err-box.vis{display:block}
+.info-banner{background:var(--acl);border:1px solid var(--acm);border-radius:var(--rs);padding:10px 14px;font-size:13px;color:var(--acd);margin-bottom:12px}
+.c2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.rb{background:var(--bg);border:1px solid var(--bd);border-radius:var(--rs);padding:1rem;min-height:120px;font-size:13px;color:var(--tm);line-height:1.8;white-space:pre-wrap;margin-top:10px;font-family:'Outfit',sans-serif}
+.rh{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.rl{font-size:12px;font-weight:500;color:var(--tx)}
+.cb{font-size:11px;padding:4px 10px;border:1px solid var(--bm);border-radius:var(--rs);background:none;cursor:pointer;color:var(--tm);font-family:'Outfit',sans-serif;transition:all .15s}
+.cb:hover{background:var(--g1)}
+.cpw{margin-top:14px;border-radius:var(--r);overflow:hidden;border:1px solid var(--bd)}
+.cpb{background:var(--sl);padding:8px 14px;display:flex;align-items:center;justify-content:space-between}
+.cpt{font-size:12px;color:rgba(255,255,255,0.6)}
+.cdl{padding:4px 12px;border-radius:var(--rs);font-size:11px;font-weight:500;font-family:'Outfit',sans-serif;background:var(--ac);color:white;border:none;text-decoration:none;display:inline-block}
+.cwp{background:#e2e8f0;padding:12px;display:flex;justify-content:center}
+.cwp canvas{max-width:100%;border-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+.ar{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--bd)}
+.ar:last-child{border-bottom:none}
+.al{font-size:13px;font-weight:500}
+.ald{font-size:12px;color:var(--tm);margin-top:2px}
+.tg{position:relative;width:40px;height:22px;flex-shrink:0}
+.tg input{opacity:0;width:0;height:0}
+.ts2{position:absolute;inset:0;border-radius:11px;background:var(--g2);cursor:pointer;transition:.2s}
+.ts2:before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:white;border-radius:50%;transition:.2s}
+.tg input:checked+.ts2{background:var(--ac)}
+.tg input:checked+.ts2:before{transform:translateX(18px)}
+.ai-loading{background:var(--acl);border:1px solid var(--acm);border-radius:var(--r);padding:1.25rem;margin-top:12px;display:none;align-items:center;gap:12px;font-size:13px;color:var(--acd)}
+.ai-loading.vis{display:flex}
+.ai-spin{width:18px;height:18px;border:2px solid var(--acm);border-top-color:var(--ac);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sb">
+  <div class="logo">
+    <div class="lm"><svg viewBox="0 0 16 16"><path d="M8 1L10.5 6H15L11 9.5L12.5 14.5L8 11.5L3.5 14.5L5 9.5L1 6H5.5L8 1Z"/></svg></div>
+    <div class="lt">Cherch'<span>Emploi</span></div>
+  </div>
+  <div class="ns">Navigation</div>
+  <nav>
+    <button class="ni active" onclick="showPage('recherche',this)">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><line x1="10" y1="10" x2="14" y2="14"/></svg>
+      Recherche d'offres
+      <span class="nb" id="nc">0</span>
+    </button>
+    <button class="ni" onclick="showPage('cv',this)">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="1" width="10" height="14" rx="1"/><line x1="6" y1="5" x2="10" y2="5"/><line x1="6" y1="8" x2="10" y2="8"/><line x1="6" y1="11" x2="9" y2="11"/></svg>
+      CV &amp; Lettre de motiv.
+    </button>
+    <button class="ni" onclick="showPage('alertes',this)">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1a5 5 0 015 5v3l1.5 2H1.5L3 9V6a5 5 0 015-5z"/><path d="M6 13a2 2 0 004 0"/></svg>
+      Alertes email
+    </button>
+  </nav>
+  <div class="sb-bot">
+    <div class="up">
+      <div class="av" id="user-av">?</div>
+      <div><div class="un" id="user-name">Mon compte</div><span class="pb">Pro</span></div>
+    </div>
+  </div>
+</aside>
+
+<main class="main">
+
+  <!-- RECHERCHE -->
+  <div class="page active" id="page-recherche">
+    <div class="ph">
+      <div class="pt">Recherche d'offres</div>
+      <div class="ps">Vraies offres depuis France Travail, Indeed, APEC, HelloWork, Jobijoba et LinkedIn</div>
+    </div>
+
+    <div class="card">
+      <div class="ct"><svg viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="6" r="4.5"/><line x1="9.5" y1="9.5" x2="13" y2="13"/></svg>Critères de recherche</div>
+      <div class="g2" style="margin-bottom:12px">
+        <div class="fi"><label>Poste recherché</label><input id="poste" placeholder="ex: Manutentionnaire, Cariste, Infirmier..."></div>
+        <div class="fi"><label>Type de contrat</label>
+          <select id="contrat">
+            <option value="">Tous types</option>
+            <option value="CDI">CDI</option>
+            <option value="CDD">CDD</option>
+            <option value="MIS">Intérim</option>
+            <option value="SAI">Saisonnier</option>
+          </select>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="fi"><label>Ville ou code postal</label><input id="lieu" placeholder="ex: Péronne, 80200, Amiens..."></div>
+        <div class="fi"><label>Rayon de recherche</label><div class="rw"><input type="range" min="10" max="100" value="30" step="10" id="rayon" oninput="document.getElementById('rv').textContent=this.value+'km'"><span class="rv" id="rv">30km</span></div></div>
+      </div>
+    </div>
+
+    <div class="err-box" id="err-box"></div>
+
+    <button class="pbtn" id="search-btn" onclick="lancerRecherche()" style="margin-bottom:1.5rem;width:100%;justify-content:center;padding:13px;font-size:15px">
+      <span id="search-txt">Rechercher les offres</span>
+      <span id="search-sp" style="display:none"><div class="sp"></div></span>
+    </button>
+
+    <div class="stats" id="stats-row" style="display:none">
+      <div class="sc"><div class="sl2">Offres trouvées</div><div class="sv" id="st">0</div><div class="ss" id="ss">—</div></div>
+      <div class="sc"><div class="sl2">Ville recherchée</div><div class="sv" style="font-size:18px" id="sv">—</div><div class="ss" style="color:var(--tm)" id="sr">—</div></div>
+      <div class="sc"><div class="sl2">Sources actives</div><div class="sv" id="src-count">0</div><div class="ss" style="color:var(--tm)">sites d'emploi</div></div>
+    </div>
+
+    <!-- Onglets sources -->
+    <div class="src-tabs" id="src-tabs" style="display:none">
+      <button class="src-tab active" onclick="filtrerSource('all',this)"><span class="dot"></span>Toutes les sources</button>
+      <button class="src-tab" onclick="filtrerSource('ft',this)" id="tab-ft" style="display:none"><span class="dot"></span>France Travail</button>
+      <button class="src-tab" onclick="filtrerSource('indeed',this)" id="tab-indeed" style="display:none"><span class="dot"></span>Indeed</button>
+      <button class="src-tab" onclick="filtrerSource('apec',this)" id="tab-apec" style="display:none"><span class="dot"></span>APEC</button>
+      <button class="src-tab" onclick="filtrerSource('hellowork',this)" id="tab-hellowork" style="display:none"><span class="dot"></span>HelloWork</button>
+      <button class="src-tab" onclick="filtrerSource('jobijoba',this)" id="tab-jobijoba" style="display:none"><span class="dot"></span>Jobijoba</button>
+      <button class="src-tab" onclick="filtrerSource('linkedin',this)" id="tab-linkedin" style="display:none"><span class="dot"></span>LinkedIn</button>
+    </div>
+
+    <div class="ol" id="olist">
+      <div class="es"><div class="ei">🔍</div><div class="et">Lance une recherche pour voir les offres</div><div style="font-size:13px;margin-top:4px">Les vraies offres s'afficheront ici</div></div>
+    </div>
+  </div>
+
+  <!-- CV & LETTRE -->
+  <div class="page" id="page-cv">
+    <div class="ph"><div class="pt">CV &amp; Lettre de motivation</div><div class="ps">Mistral IA lit ton vrai CV et génère un contenu professionnel personnalisé</div></div>
+
+    <div class="card">
+      <div class="ct"><svg viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="1" width="11" height="13" rx="1"/></svg>Étape 1 — Ton CV (PDF recommandé)</div>
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('upload',this)">📎 Upload PDF / Word</button>
+        <button class="tab" onclick="switchTab('paste',this)">📋 Coller le texte</button>
+      </div>
+      <div id="tab-upload">
+        <div class="uz" id="uz" onclick="document.getElementById('cvf').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event)">
+          <div class="ui">📄</div>
+          <div class="ut"><strong>Clique pour uploader</strong> ou glisse ton fichier ici</div>
+          <div class="ut" style="margin-top:4px;font-size:12px">PDF ou Word (.docx) — max 10MB — Gemini lit directement le PDF</div>
+          <div class="un2" id="uname" style="display:none"></div>
+        </div>
+        <input type="file" id="cvf" accept=".pdf,.doc,.docx" onchange="handleFile(this.files[0])">
+        <div class="cv-status" id="cv-status"></div>
+      </div>
+      <div id="tab-paste" style="display:none">
+        <div class="info-banner">💡 Copie-colle le contenu complet de ton CV — nom, coordonnées, expériences, formations, compétences</div>
+        <div class="fi"><textarea id="cv-paste" placeholder="Jean Dupont&#10;06 12 34 56 78 | jean.dupont@email.com&#10;12 rue de la Paix, 80200 Péronne&#10;&#10;EXPÉRIENCES PROFESSIONNELLES&#10;Cariste CACES 1,3,5 — Entrepôt XY, Péronne (2020-2024)&#10;- Conduite de chariots élévateurs&#10;- Gestion des stocks&#10;&#10;FORMATION&#10;CACES catégories 1, 3, 5 — 2020&#10;BEP Logistique — 2018&#10;&#10;COMPÉTENCES&#10;CACES 1,3,5 | Logistique | Manutention | Gestion stock" rows="12"></textarea></div>
+        <button class="pbtn" style="margin-top:10px;font-size:13px;padding:8px 16px" onclick="usePastedCV()">Utiliser ce CV</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ct"><svg viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7.5 1L9.5 5.5H14L10.5 8.5L12 13L7.5 10.5L3 13L4.5 8.5L1 5.5H5.5L7.5 1Z"/></svg>Étape 2 — Poste et entreprise visés</div>
+      <div class="g2">
+        <div class="fi"><label>Intitulé du poste visé</label><input id="cv-poste" placeholder="ex: Cariste CACES 1,3,5, Manutentionnaire..."></div>
+        <div class="fi"><label>Entreprise (optionnel)</label><input id="cv-entreprise" placeholder="ex: Amazon, Lidl, XPO..."></div>
+      </div>
+    </div>
+
+    <div class="c2">
+      <div class="card">
+        <div class="ct"><svg viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="1" width="11" height="13" rx="1"/><path d="M5 5h5M5 8h5M5 11h3"/></svg>CV adapté — PDF visuel</div>
+        <div style="font-size:13px;color:var(--tm);margin-bottom:12px">Mistral lit ton CV, extrait tes vraies infos et génère un PDF propre et professionnel.</div>
+        <button class="pbtn" style="width:100%;justify-content:center" onclick="generateCV()" id="cvbtn">
+          <span id="cvt">Générer le CV PDF</span>
+          <span id="cvsp" style="display:none"><div class="sp"></div></span>
+        </button>
+        <div class="ai-loading" id="cv-ai-loading">
+          <div class="ai-spin"></div>
+          <span id="cv-ai-msg">Mistral analyse ton CV...</span>
+        </div>
+        <div id="cvps" style="display:none">
+          <div class="cpw"><div class="cpb"><span class="cpt">Aperçu — CV généré par IA</span><a id="cvdl" class="cdl" download="CV.pdf">⬇ Télécharger PDF</a></div><div class="cwp"><canvas id="cvc"></canvas></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ct"><svg viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 2h11v11H2z"/><line x1="5" y1="5" x2="10" y2="5"/><line x1="5" y1="7.5" x2="10" y2="7.5"/><line x1="5" y1="10" x2="8" y2="10"/></svg>Lettre de motivation</div>
+        <div style="font-size:13px;color:var(--tm);margin-bottom:12px">Mistral rédige une lettre professionnelle basée sur ton vrai parcours.</div>
+        <button class="pbtn" style="width:100%;justify-content:center;background:var(--pu)" onclick="generateLetter()" id="lbtn">
+          <span id="lt2">Générer la lettre</span>
+          <span id="lsp" style="display:none"><div class="sp"></div></span>
+        </button>
+        <div class="ai-loading" id="letter-ai-loading">
+          <div class="ai-spin"></div>
+          <span>Mistral rédige ta lettre...</span>
+        </div>
+        <div id="lps" style="display:none">
+          <div class="rh" style="margin-top:14px"><span class="rl">Lettre générée par Gemini</span>
+            <div style="display:flex;gap:6px"><button class="cb" onclick="copyText('lres')">Copier</button><a id="ldl" class="cb" style="text-decoration:none;color:var(--pu);border-color:var(--pu)" download="Lettre_motivation.txt">⬇ Télécharger</a></div>
+          </div>
+          <div class="rb" id="lres"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALERTES -->
+  <div class="page" id="page-alertes">
+    <div class="ph"><div class="pt">Alertes email</div><div class="ps">Reçois les nouvelles offres dans ta boîte mail</div></div>
+    <div class="card">
+      <div class="ar"><div><div class="al">Résumé quotidien</div><div class="ald">Les offres du jour chaque matin à 8h00</div></div><label class="tg"><input type="checkbox" checked><span class="ts2"></span></label></div>
+      <div class="ar"><div><div class="al">Récapitulatif hebdomadaire</div><div class="ald">Bilan chaque vendredi soir</div></div><label class="tg"><input type="checkbox"><span class="ts2"></span></label></div>
+      <div class="ar"><div><div class="al">Adresse email</div><div class="ald" id="alert-email">—</div></div><button class="sbtn">Modifier</button></div>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<script>
+// Les identifiants sont dans les variables d'environnement Netlify
+let accessToken = null;
+let tokenExpiry = 0;
+let allOffres = [];      // toutes les offres récupérées
+let filteredOffres = []; // offres filtrées par source
+let cvFile = null;       // fichier CV uploadé
+let cvBase64 = null;     // PDF en base64 pour Gemini
+let cvText = '';         // texte brut (fallback Word/paste)
+
+// ── NAV ────────────────────────────────────────────────────────────
+function showPage(n, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(x => x.classList.remove('active'));
+  document.getElementById('page-'+n).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+function switchTab(tab, btn){
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); btn.classList.add('active');
+  document.getElementById('tab-upload').style.display = tab==='upload'?'block':'none';
+  document.getElementById('tab-paste').style.display = tab==='paste'?'block':'none';
+}
+
+// ── TOKEN FRANCE TRAVAIL ───────────────────────────────────────────
+async function getToken() {
+  if(accessToken && Date.now() < tokenExpiry) return accessToken;
+  const res = await fetch('/.netlify/functions/ft-proxy?action=token');
+  if(!res.ok) throw new Error('Authentification France Travail échouée');
+  const data = await res.json();
+  if(!data.access_token) throw new Error(data.error || 'Token invalide');
+  accessToken = data.access_token;
+  tokenExpiry = Date.now() + ((data.expires_in || 1200) - 60) * 1000;
+  return accessToken;
+}
+
+// ── GÉOCODAGE ──────────────────────────────────────────────────────
+async function geocode(query) {
+  const url = `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(query)}&type=municipality&limit=1`;
+  const res = await fetch(url);
+  const data = await res.json();
+  if(data.features?.length > 0) {
+    const f = data.features[0];
+    return { lat: f.geometry.coordinates[1], lng: f.geometry.coordinates[0], nom: f.properties.city || f.properties.label, codeInsee: f.properties.citycode };
+  }
+  return null;
+}
+
+// ── URLS EXTERNES PAR SOURCE ───────────────────────────────────────
+function buildExternalUrl(source, offre, poste, lieu) {
+  const q = encodeURIComponent(poste);
+  const l = encodeURIComponent(lieu);
+  switch(source) {
+    case 'indeed':    return `https://fr.indeed.com/jobs?q=${q}&l=${l}`;
+    case 'apec':      return `https://www.apec.fr/candidat/recherche-emploi.html/emploi?motsCles=${q}&lieu=${l}`;
+    case 'hellowork': return `https://www.hellowork.com/fr-fr/emploi/recherche.html?k=${q}&l=${l}`;
+    case 'jobijoba':  return `https://www.jobijoba.com/fr/offre-emploi/?what=${q}&where=${l}`;
+    case 'linkedin':  return `https://www.linkedin.com/jobs/search/?keywords=${q}&location=${l}`;
+    default:          return offre.id ? `https://candidat.francetravail.fr/offres/recherche/detail/${offre.id}` : '#';
+  }
+}
+
+// ── RECHERCHE MULTI-SOURCES ────────────────────────────────────────
+async function lancerRecherche() {
+  const poste = document.getElementById('poste').value.trim();
+  const lieu = document.getElementById('lieu').value.trim();
+  const rayon = document.getElementById('rayon').value;
+  const contrat = document.getElementById('contrat').value;
+
+  if(!poste){ alert('Saisis d\'abord un poste.'); return; }
+  if(!lieu){ alert('Saisis d\'abord une ville ou un code postal.'); return; }
+
+  const btn = document.getElementById('search-btn');
+  const txt = document.getElementById('search-txt');
+  const sp  = document.getElementById('search-sp');
+  const err = document.getElementById('err-box');
+
+  btn.disabled = true; txt.textContent = 'Recherche en cours...'; sp.style.display = 'inline-block';
+  err.classList.remove('vis');
+  allOffres = [];
+
+  try {
+    // 1. Géolocaliser
+    txt.textContent = 'Géolocalisation...';
+    const geo = await geocode(lieu);
+    if(!geo) throw new Error('Ville introuvable. Essaie avec le nom complet ou le code postal.');
+
+    // 2. France Travail (API officielle)
+    txt.textContent = 'France Travail...';
+    try {
+      const token = await getToken();
+      const params = new URLSearchParams({ motsCles: poste, commune: geo.codeInsee, distance: rayon, range: '0-49', sort: '1' });
+      if(contrat) params.set('typeContrat', contrat);
+      const res = await fetch(`/.netlify/functions/ft-proxy?action=search&${params}`, { headers: { 'x-ft-token': token } });
+      if(res.ok) {
+        const data = await res.json();
+        const ftOffres = (data.resultats || []).map(o => ({
+          id: o.id, source: 'ft',
+          titre: o.intitule || '',
+          entreprise: o.entreprise?.nom || 'Entreprise non précisée',
+          lieu: [o.lieuTravail?.libelle, o.lieuTravail?.codePostal].filter(Boolean).join(' '),
+          contrat: o.typeContrat || '',
+          salaire: o.salaire?.libelle || '',
+          duree: o.dureeTravailLibelle || '',
+          description: o.description ? o.description.substring(0, 200) + '...' : '',
+          date: o.dateCreation ? new Date(o.dateCreation).toLocaleDateString('fr-FR') : '',
+          url: o.id ? `https://candidat.francetravail.fr/offres/recherche/detail/${o.id}` : '#'
+        }));
+        allOffres.push(...ftOffres);
+      }
+    } catch(e) { console.warn('France Travail:', e.message); }
+
+    // 3. Autres sources — offres simulées pointant vers les vrais sites
+    // (Indeed, APEC, HelloWork, Jobijoba, LinkedIn ne fournissent pas d'API publique gratuite,
+    //  donc on génère des liens de recherche directs vers leurs résultats)
+    const autresSources = [
+      { id: 'indeed',    nom: 'Indeed',    label: 'Voir sur Indeed' },
+      { id: 'apec',      nom: 'APEC',      label: 'Voir sur APEC' },
+      { id: 'hellowork', nom: 'HelloWork', label: 'Voir sur HelloWork' },
+      { id: 'jobijoba',  nom: 'Jobijoba',  label: 'Voir sur Jobijoba' },
+      { id: 'linkedin',  nom: 'LinkedIn',  label: 'Voir sur LinkedIn' },
+    ];
+
+    for(const src of autresSources) {
+      allOffres.push({
+        id: src.id + '_search',
+        source: src.id,
+        titre: `Offres "${poste}" sur ${src.nom}`,
+        entreprise: `Recherche directe sur ${src.nom}`,
+        lieu: geo.nom + ' et alentours',
+        contrat: contrat || 'Tous types',
+        salaire: '',
+        duree: '',
+        description: `Clique sur "Voir les offres" pour accéder aux résultats "${poste}" à ${rayon}km de ${geo.nom} directement sur ${src.nom}.`,
+        date: 'Aujourd\'hui',
+        url: buildExternalUrl(src.id, {}, poste, geo.nom),
+        isExternal: true
+      });
+    }
+
+    // 4. Afficher
+    filteredOffres = [...allOffres];
+    const ftCount = allOffres.filter(o => o.source === 'ft').length;
+
+    document.getElementById('stats-row').style.display = 'grid';
+    document.getElementById('st').textContent = ftCount > 0 ? ftCount + ' (FT)' : '0';
+    document.getElementById('ss').textContent = ftCount > 0 ? `+ 5 autres sources` : 'Voir les autres sources';
+    document.getElementById('sv').textContent = geo.nom;
+    document.getElementById('sr').textContent = `Dans ${rayon}km`;
+    document.getElementById('src-count').textContent = '6';
+    document.getElementById('nc').textContent = ftCount;
+
+    // Afficher les onglets sources
+    document.getElementById('src-tabs').style.display = 'flex';
+    ['ft','indeed','apec','hellowork','jobijoba','linkedin'].forEach(s => {
+      document.getElementById('tab-'+s).style.display = 'flex';
+    });
+
+    renderOffres(filteredOffres, poste, geo.nom);
+
+  } catch(e) {
+    err.classList.add('vis');
+    err.textContent = '⚠️ ' + e.message;
+  }
+
+  btn.disabled = false; txt.textContent = 'Rechercher les offres'; sp.style.display = 'none';
+}
+
+// ── FILTRE PAR SOURCE ──────────────────────────────────────────────
+function filtrerSource(source, btn) {
+  document.querySelectorAll('.src-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  filteredOffres = source === 'all' ? [...allOffres] : allOffres.filter(o => o.source === source);
+  const poste = document.getElementById('poste').value.trim();
+  const lieu = document.getElementById('lieu').value.trim();
+  renderOffres(filteredOffres, poste, lieu);
+}
+
+// ── AFFICHAGE OFFRES ───────────────────────────────────────────────
+function srcLabel(s){ return {ft:'France Travail',indeed:'Indeed',apec:'APEC',hellowork:'HelloWork',jobijoba:'Jobijoba',linkedin:'LinkedIn'}[s]||s }
+
+function renderOffres(offres, poste, lieu) {
+  const list = document.getElementById('olist');
+  if(!offres.length){
+    list.innerHTML = '<div class="es"><div class="ei">📭</div><div class="et">Aucune offre dans cette catégorie</div></div>';
+    return;
+  }
+  list.innerHTML = offres.map((o, i) => {
+    const tagClass = o.contrat === 'CDI' ? 'cdi' : o.contrat === 'CDD' ? 'cdd' : o.contrat.includes('MIS') ? 'mis' : '';
+    const initials = o.isExternal ? srcLabel(o.source).substring(0,2).toUpperCase() : (o.entreprise||'?').substring(0,2).toUpperCase();
+    const btnLabel = o.isExternal ? 'Voir les offres ↗' : 'Voir l\'offre ↗';
+    return `
+    <div class="oc" style="animation-delay:${i*.03}s${o.isExternal?';border-left:3px solid var(--acm)':''}">
+      <div class="oc-logo" style="${o.isExternal?'background:var(--acl);color:var(--acd)':''}">${initials}</div>
+      <div class="ob">
+        <div class="oti">${o.titre}</div>
+        <div class="oco">${o.entreprise} · ${o.lieu}</div>
+        <div class="otg">
+          ${tagClass && o.contrat ? `<span class="tag ${tagClass}">${o.contrat}</span>` : ''}
+          ${o.salaire ? `<span class="tag">${o.salaire}</span>` : ''}
+          ${o.duree ? `<span class="tag">${o.duree}</span>` : ''}
+          <span class="tag src-${o.source}">${srcLabel(o.source)}</span>
+        </div>
+        ${o.description ? `<div style="font-size:12px;color:var(--tm);margin-top:8px;line-height:1.5">${o.description}</div>` : ''}
+        <div class="oa">
+          <button class="ab" onclick="preCVOffre('${encodeURIComponent(o.titre)}','${encodeURIComponent(o.entreprise)}')">✏️ Adapter mon CV</button>
+          <button class="ab" onclick="preCVOffre('${encodeURIComponent(o.titre)}','${encodeURIComponent(o.entreprise)}',true)">📝 Lettre de motiv.</button>
+        </div>
+      </div>
+      <div class="or2">
+        <a href="${o.url}" target="_blank" rel="noopener" class="voir-btn">${btnLabel}</a>
+        <span class="od">${o.date}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function preCVOffre(posteEnc, entrepriseEnc, lettre=false) {
+  document.getElementById('cv-poste').value = decodeURIComponent(posteEnc);
+  document.getElementById('cv-entreprise').value = decodeURIComponent(entrepriseEnc);
+  showPage('cv', document.querySelectorAll('.ni')[1]);
+  if(lettre) setTimeout(() => generateLetter(), 300);
+}
+
+// ── UPLOAD CV ──────────────────────────────────────────────────────
+function setCVStatus(type, msg) {
+  const el = document.getElementById('cv-status');
+  el.className = 'cv-status ' + type;
+  el.style.display = 'flex';
+  el.textContent = msg;
+}
+
+function handleFile(file) {
+  if(!file) return;
+  if(file.size > 10 * 1024 * 1024) { setCVStatus('err', '❌ Fichier trop grand (max 10MB)'); return; }
+
+  cvFile = file;
+  document.getElementById('uz').classList.add('done');
+  document.getElementById('uname').style.display = 'block';
+  document.getElementById('uname').textContent = '📄 ' + file.name;
+
+  const reader = new FileReader();
+
+  if(file.name.endsWith('.pdf')) {
+    // PDF → on lit en binaire et on extrait ce qu'on peut
+    setCVStatus('loading', '⏳ Chargement du PDF...');
+    reader.onload = e => {
+      // Extraction basique du texte lisible dans le PDF
+      const bytes = new Uint8Array(e.target.result);
+      let text = '';
+      for(let i = 0; i < bytes.length; i++) {
+        const c2 = bytes[i];
+        if(c2 >= 32 && c2 < 127) text += String.fromCharCode(c2);
+        else if(c2 === 10 || c2 === 13) text += ' ';
+      }
+      // Nettoyer le texte extrait
+      cvText = text.replace(/\s+/g, ' ').replace(/[^ -~À-ɏ
+]/g, '').trim();
+      cvBase64 = null;
+      setCVStatus('ok', '✅ PDF chargé — ' + file.name + ' (si le texte est illisible, utilise "Coller le texte")');
+    };
+    reader.readAsArrayBuffer(file);
+  } else {
+    // Word / texte
+    setCVStatus('loading', '⏳ Lecture du fichier...');
+    reader.onload = e => {
+      cvText = typeof e.target.result === 'string' ? e.target.result : 'Fichier: ' + file.name;
+      cvBase64 = null;
+      setCVStatus('ok', '✅ Fichier chargé — contenu texte disponible');
+    };
+    reader.readAsText(file, 'utf-8');
+  }
+}
+function handleDrop(e){ e.preventDefault(); document.getElementById('uz').classList.remove('drag'); if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); }
+function usePastedCV() {
+  const text = document.getElementById('cv-paste').value.trim();
+  if(!text){ alert('Colle d\'abord le contenu de ton CV.'); return; }
+  cvText = text; cvBase64 = null;
+  switchTab('upload', document.querySelectorAll('.tab')[0]);
+  document.getElementById('uz').classList.add('done');
+  document.getElementById('uname').style.display = 'block';
+  document.getElementById('uname').textContent = '📋 CV collé manuellement';
+  setCVStatus('ok', '✅ CV chargé — prêt pour la génération');
+}
+
+// ── GEMINI API ─────────────────────────────────────────────────────
+async function callMistral(prompt) {
+  const res = await fetch('/.netlify/functions/mistral-proxy', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt })
+  });
+  const data = await res.json();
+  if(!res.ok || data.error) throw new Error(data.error || 'Erreur Mistral');
+  return data.text;
+}
+
+// ── GÉNÉRER CV ─────────────────────────────────────────────────────
+async function generateCV() {
+  const poste = document.getElementById('cv-poste').value.trim();
+  const entreprise = document.getElementById('cv-entreprise').value.trim();
+  if(!cvBase64 && !cvText) { alert('Importe d\'abord ton CV à l\'étape 1.'); return; }
+  if(!poste) { alert('Saisis le poste visé à l\'étape 2.'); return; }
+
+  const btn = document.getElementById('cvbtn'), bt = document.getElementById('cvt'), sp = document.getElementById('cvsp');
+  const loader = document.getElementById('cv-ai-loading');
+  const msgEl = document.getElementById('cv-ai-msg');
+  btn.disabled = true; bt.textContent = 'Génération IA...'; sp.style.display = 'inline-block';
+  loader.classList.add('vis');
+  document.getElementById('cvps').style.display = 'none';
+
+  let cvData;
+  try {
+    msgEl.textContent = 'Mistral lit ton CV...';
+    const cvContext = `Voici le contenu du CV :\n${cvText}`;
+
+    const prompt = `Tu es un expert RH et rédacteur de CV professionnel.
+
+${cvContext}
+
+Poste visé : ${poste}${entreprise ? ' chez ' + entreprise : ''}
+
+INSTRUCTIONS IMPORTANTES :
+1. Extrais TOUTES les vraies informations du CV (nom complet, email, téléphone, adresse, toutes les expériences, toutes les formations, toutes les compétences)
+2. Adapte le contenu pour le poste visé en reformulant les bullet points
+3. Ne JAMAIS inventer d'informations — utilise uniquement ce qui est dans le CV
+4. Réponds UNIQUEMENT en JSON valide, sans markdown, sans texte avant ou après
+
+Format JSON attendu :
+{
+  "nom": "Prénom NOM exact du CV",
+  "email": "email exact du CV",
+  "telephone": "téléphone exact du CV",
+  "adresse": "adresse exacte du CV",
+  "poste_cible": "${poste}",
+  "offre_titre": "${poste}",
+  "offre_entreprise": "${entreprise}",
+  "experiences": [
+    {"titre": "intitulé poste", "entreprise": "nom entreprise — ville", "date": "AAAA – AAAA", "bullets": ["réalisation 1", "réalisation 2", "réalisation 3"]}
+  ],
+  "formations": [
+    {"diplome": "nom diplôme/certification", "ecole": "établissement", "annee": "AAAA"}
+  ],
+  "competences": ["compétence 1", "compétence 2", "compétence 3", "compétence 4", "compétence 5", "compétence 6"],
+  "langues": ["Français (natif)"]
+}`;
+
+    msgEl.textContent = 'Structuration du CV...';
+    const text = await callMistral(prompt);
+    const clean = text.replace(/```json|```/g,'').trim();
+    cvData = JSON.parse(clean);
+    msgEl.textContent = 'Génération du PDF...';
+  } catch(e) {
+    console.warn('Gemini CV error:', e);
+    // Fallback parsing basique
+    cvData = {
+      nom: 'Voir CV original',
+      email: '', telephone: '', adresse: '',
+      poste_cible: poste, offre_titre: poste, offre_entreprise: entreprise,
+      experiences: [{titre: poste, entreprise: entreprise, date: '', bullets: ['Voir CV original pour les détails']}],
+      formations: [], competences: [], langues: ['Français']
+    };
+  }
+
+  const pdfBytes = buildPDF(cvData);
+  const blob = new Blob([pdfBytes], {type:'application/pdf'});
+  const url = URL.createObjectURL(blob);
+  document.getElementById('cvdl').href = url;
+  document.getElementById('cvdl').download = `CV_${(cvData.nom||'candidat').replace(/\s/g,'_')}_${poste.replace(/\s/g,'_')}.pdf`;
+  document.getElementById('cvps').style.display = 'block';
+  drawPreview(cvData);
+
+  loader.classList.remove('vis');
+  btn.disabled = false; bt.textContent = 'Régénérer le CV'; sp.style.display = 'none';
+}
+
+// ── GÉNÉRER LETTRE ─────────────────────────────────────────────────
+async function generateLetter() {
+  const poste = document.getElementById('cv-poste').value.trim();
+  const entreprise = document.getElementById('cv-entreprise').value.trim();
+  if(!cvBase64 && !cvText) { alert('Importe d\'abord ton CV à l\'étape 1.'); return; }
+  if(!poste) { alert('Saisis le poste visé à l\'étape 2.'); return; }
+
+  const btn = document.getElementById('lbtn'), bt = document.getElementById('lt2'), sp = document.getElementById('lsp');
+  const loader = document.getElementById('letter-ai-loading');
+  btn.disabled = true; bt.textContent = 'Génération IA...'; sp.style.display = 'inline-block';
+  loader.classList.add('vis');
+  document.getElementById('lps').style.display = 'none';
+
+  try {
+    const cvContext = `Voici le contenu du CV :\n${cvText}`;
+
+    const prompt = `Tu es un expert en ressources humaines et rédaction professionnelle.
+
+${cvContext}
+
+Rédige une lettre de motivation professionnelle, personnalisée et percutante en français.
+
+Poste visé : ${poste}${entreprise ? ' chez ' + entreprise : ''}
+
+INSTRUCTIONS IMPORTANTES :
+- Utilise le VRAI nom et prénom du candidat trouvé dans le CV
+- Mentionne des expériences et compétences CONCRÈTES extraites du CV
+- La lettre doit faire 200 à 250 mots maximum
+- Structure : ville + date, formule d'appel, accroche originale, 2 paragraphes argumentés, formule de politesse + signature
+- Ton professionnel, dynamique et chaleureux
+- Signe avec le vrai nom + email si présent dans le CV
+- Commence directement par la ville et la date (exemple : "Péronne, le 22 mars 2026")
+- NE mets aucun commentaire, aucune explication, rédige directement la lettre`;
+
+    const lettre = await callMistral(prompt);
+    document.getElementById('lres').textContent = lettre;
+    document.getElementById('ldl').href = URL.createObjectURL(new Blob([lettre], {type:'text/plain;charset=utf-8'}));
+    document.getElementById('lps').style.display = 'block';
+  } catch(e) {
+    document.getElementById('lres').textContent = 'Erreur : ' + e.message + '\nVérifie que GEMINI_API_KEY est configurée sur Netlify.';
+    document.getElementById('lps').style.display = 'block';
+  }
+
+  loader.classList.remove('vis');
+  btn.disabled = false; bt.textContent = 'Régénérer la lettre'; sp.style.display = 'none';
+}
+
+// ── PDF BUILDER ────────────────────────────────────────────────────
+function buildPDF(d){
+  const W=595,H=842,sw=185;
+  function rgb(r,g,b){return`${(r/255).toFixed(3)} ${(g/255).toFixed(3)} ${(b/255).toFixed(3)}`}
+  function esc(s){return(s||'').toString().replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)').replace(/[^\x20-\x7E]/g,c=>{const n=c.charCodeAt(0);return n<256?`\\${n.toString(8).padStart(3,'0')}`:' '})}
+  const A=[37,99,235],W2=[255,255,255],D=[17,24,39],G=[107,114,128],L=[241,245,249],S=[30,41,59],GN=[22,163,74];
+  let s='';
+  s+=`${rgb(...S)} rg 0 0 ${sw} ${H} re f\n${rgb(239,246,255)} rg ${sw} ${H-75} ${W-sw} 75 re f\n`;
+  const ax=sw/2,ay=44,ar=38,k=ar*.552;
+  s+=`${rgb(...A)} rg ${ax-ar} ${H-ay} m ${ax-ar} ${H-ay+k} ${ax-k} ${H-ay+ar} ${ax} ${H-ay+ar} c ${ax+k} ${H-ay+ar} ${ax+ar} ${H-ay+k} ${ax+ar} ${H-ay} c ${ax+ar} ${H-ay-k} ${ax+k} ${H-ay-ar} ${ax} ${H-ay-ar} c ${ax-k} ${H-ay-ar} ${ax-ar} ${H-ay-k} ${ax-ar} ${H-ay} c f\n`;
+  const ini=(d.nom||'?').split(' ').map(p=>p[0]).slice(0,2).join('').toUpperCase();
+  s+=`BT /F2 16 Tf ${rgb(...W2)} rg ${ax-11} ${H-ay-5} Td (${esc(ini)}) Tj ET\n`;
+  const np=(d.nom||'Candidat').split(' ');
+  s+=`BT /F2 11 Tf ${rgb(...W2)} rg ${ax-38} ${H-ay-ar-16} Td (${esc(np[0]||'')}) Tj ET\n`;
+  if(np[1])s+=`BT /F2 11 Tf ${rgb(...W2)} rg ${ax-38} ${H-ay-ar-28} Td (${esc(np.slice(1).join(' '))}) Tj ET\n`;
+  s+=`BT /F3 8 Tf ${rgb(147,197,253)} rg ${ax-50} ${H-ay-ar-42} Td (${esc((d.poste_cible||'').substring(0,32))}) Tj ET\n`;
+  let sy=ay+ar+52;
+  s+=`${rgb(51,65,85)} RG .4 w 8 ${H-sy} m ${sw-8} ${H-sy} l S\n`;sy+=10;
+  function sbS(title,items,y){
+    s+=`BT /F2 7 Tf ${rgb(148,163,184)} rg 8 ${H-y} Td (${esc(title.toUpperCase())}) Tj ET\n`;y+=13;
+    for(const it of(items||[])){s+=`${rgb(...A)} rg 12 ${H-y+2} 4 4 re f\n`;s+=`BT /F1 8 Tf ${rgb(...W2)} rg 20 ${H-y} Td (${esc((it||'').substring(0,28))}) Tj ET\n`;y+=13;}
+    return y+5;
+  }
+  sy=sbS('Competences',d.competences,sy);s+=`${rgb(51,65,85)} RG 8 ${H-sy} m ${sw-8} ${H-sy} l S\n`;sy+=8;
+  sy=sbS('Langues',d.langues||['Francais'],sy);s+=`${rgb(51,65,85)} RG 8 ${H-sy} m ${sw-8} ${H-sy} l S\n`;sy+=8;
+  s+=`BT /F2 7 Tf ${rgb(148,163,184)} rg 8 ${H-sy} Td (CONTACT) Tj ET\n`;sy+=12;
+  const contacts = [d.telephone, d.email, d.adresse].filter(Boolean);
+  for(const c of contacts){s+=`BT /F1 7.5 Tf ${rgb(203,213,225)} rg 8 ${H-sy} Td (${esc(c.substring(0,30))}) Tj ET\n`;sy+=12;}
+  const mx=sw+14,mw=W-sw-22;
+  s+=`BT /F2 20 Tf ${rgb(...D)} rg ${mx} ${H-22} Td (${esc(d.nom||'Candidat')}) Tj ET\n`;
+  const pw=Math.min((d.poste_cible||'').length*5.8+18,mw-10);
+  s+=`${rgb(...A)} rg ${mx} ${H-44} ${pw} 16 re f\n`;
+  s+=`BT /F1 8.5 Tf ${rgb(...W2)} rg ${mx+6} ${H-38.5} Td (${esc((d.poste_cible||'').substring(0,42))}) Tj ET\n`;
+  s+=`BT /F3 7.5 Tf ${rgb(...G)} rg ${mx} ${H-60} Td (Candidature : ${esc((d.offre_entreprise||d.poste_cible||'').substring(0,50))}) Tj ET\n`;
+  let my=80;
+  function mS(t){s+=`${rgb(...A)} rg ${mx} ${H-my} 3 16 re f\n`;s+=`BT /F2 10.5 Tf ${rgb(...D)} rg ${mx+9} ${H-my+3} Td (${esc(t)}) Tj ET\n`;s+=`${rgb(226,232,240)} RG .35 w ${mx+9} ${H-my-3} m ${mx+mw} ${H-my-3} l S\n`;my+=18;}
+  mS('Experiences professionnelles');
+  for(const exp of(d.experiences||[])){
+    s+=`${rgb(...L)} rg ${mx} ${H-my-5} ${mw} 20 re f\n`;
+    s+=`BT /F2 9.5 Tf ${rgb(...D)} rg ${mx+5} ${H-my+8} Td (${esc((exp.titre||'').substring(0,52))}) Tj ET\n`;
+    s+=`BT /F1 8.5 Tf ${rgb(...A)} rg ${mx+5} ${H-my-1} Td (${esc((exp.entreprise||'').substring(0,52))}) Tj ET\n`;
+    const dw=(exp.date||'').length*5+12;
+    s+=`${rgb(...A)} rg ${mx+mw-dw-2} ${H-my-2} ${dw} 13 re f\n`;
+    s+=`BT /F1 7.5 Tf ${rgb(...W2)} rg ${mx+mw-dw+2} ${H-my+4} Td (${esc(exp.date||'')}) Tj ET\n`;
+    my+=19;
+    for(const b of(exp.bullets||[])){
+      s+=`${rgb(...A)} rg ${mx+7} ${H-my+3} 3 3 re f\n`;
+      s+=`BT /F1 8 Tf ${rgb(55,65,81)} rg ${mx+14} ${H-my} Td (${esc((b||'').substring(0,74))}) Tj ET\n`;
+      my+=12;
+    }
+    my+=6;
+  }
+  my+=6;mS('Formation');
+  for(const f of(d.formations||[])){
+    s+=`${rgb(...L)} rg ${mx} ${H-my-4} ${mw} 20 re f\n`;
+    s+=`BT /F2 9 Tf ${rgb(...D)} rg ${mx+5} ${H-my+8} Td (${esc((f.diplome||'').substring(0,52))}) Tj ET\n`;
+    s+=`BT /F1 8 Tf ${rgb(...G)} rg ${mx+5} ${H-my-1} Td (${esc((f.ecole||'').substring(0,38))}  -  ${esc(f.annee||'')}) Tj ET\n`;
+    const yw=(f.annee||'').length*5+12;
+    s+=`${rgb(...GN)} rg ${mx+mw-yw-2} ${H-my-2} ${yw} 13 re f\n`;
+    s+=`BT /F1 7.5 Tf ${rgb(...W2)} rg ${mx+mw-yw+2} ${H-my+4} Td (${esc(f.annee||'')}) Tj ET\n`;
+    my+=26;
+  }
+  const objs=[];let oid=1;const ao=c=>{objs.push({id:oid,c});return oid++};
+  const f1=ao('<</Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding>>');
+  const f2=ao('<</Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding>>');
+  const f3=ao('<</Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique /Encoding /WinAnsiEncoding>>');
+  const stm=ao(`<</Length ${s.length}>>\nstream\n${s}\nendstream`);
+  const pg=ao(`<</Type /Page /Parent ${oid+1} 0 R /MediaBox [0 0 ${W} ${H}] /Contents ${stm} 0 R /Resources <</Font <</F1 ${f1} 0 R /F2 ${f2} 0 R /F3 ${f3} 0 R>>>>>>`);
+  const pgs=ao(`<</Type /Pages /Kids [${pg} 0 R] /Count 1>>`);
+  const cat=ao(`<</Type /Catalog /Pages ${pgs} 0 R>>`);
+  let out='%PDF-1.4\n';const offs=[];
+  for(const o of objs){offs.push(out.length);out+=`${o.id} 0 obj\n${o.c}\nendobj\n`;}
+  const xp=out.length;
+  out+=`xref\n0 ${objs.length+1}\n0000000000 65535 f \n`;
+  for(const off of offs)out+=`${off.toString().padStart(10,'0')} 00000 n \n`;
+  out+=`trailer\n<</Size ${objs.length+1} /Root ${cat} 0 R>>\nstartxref\n${xp}\n%%EOF`;
+  const bytes=new Uint8Array(out.length);for(let i=0;i<out.length;i++)bytes[i]=out.charCodeAt(i)&0xff;
+  return bytes;
+}
+
+function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();}
+
+function drawPreview(d){
+  const canvas=document.getElementById('cvc');const wrap=canvas.parentElement;
+  const SC=(wrap.offsetWidth>0?(wrap.offsetWidth-24)/595:0.94);
+  const W=Math.round(595*SC),H=Math.round(842*SC);canvas.width=W;canvas.height=H;
+  const ctx=canvas.getContext('2d');const sw=185*SC;
+  const fnt=(sz,b,i)=>`${i?'italic ':b?'bold ':''} ${sz*SC}px 'Outfit',sans-serif`;
+  function wt(text,x,y,mw,lh){const words=(text||'').split(' ');let line='';for(const w of words){const t=(line?line+' ':'')+w;if(ctx.measureText(t).width>mw&&line){ctx.fillText(line,x,y);y+=lh;line=w;}else line=t;}if(line)ctx.fillText(line,x,y);return y+lh;}
+  ctx.fillStyle='#1E293B';ctx.fillRect(0,0,sw,H);ctx.fillStyle='#EFF6FF';ctx.fillRect(sw,0,W-sw,72*SC);
+  const ax=sw/2,ay=44*SC,ar=36*SC;
+  ctx.fillStyle='#2563EB';ctx.beginPath();ctx.arc(ax,ay,ar,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#fff';ctx.font=fnt(15,true);ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText((d.nom||'?').split(' ').map(p=>p[0]).slice(0,2).join('').toUpperCase(),ax,ay);
+  ctx.textBaseline='alphabetic';const np=(d.nom||'Candidat').split(' ');
+  ctx.font=fnt(10,true);ctx.fillStyle='#fff';ctx.textAlign='center';ctx.fillText(np[0]||'',ax,ay+ar+14*SC);
+  if(np[1])ctx.fillText(np.slice(1).join(' '),ax,ay+ar+26*SC);
+  ctx.font=fnt(7.5,false,true);ctx.fillStyle='#93C5FD';ctx.fillText((d.poste_cible||'').substring(0,28),ax,ay+ar+40*SC);
+  let sy=ay+ar+52*SC;ctx.strokeStyle='#334155';ctx.lineWidth=0.5*SC;
+  ctx.beginPath();ctx.moveTo(8*SC,sy);ctx.lineTo(sw-8*SC,sy);ctx.stroke();sy+=9*SC;
+  function sbSec(title,items,y){
+    ctx.font=fnt(6.5,true);ctx.fillStyle='#94A3B8';ctx.textAlign='left';ctx.fillText(title.toUpperCase(),8*SC,y);y+=12*SC;
+    for(const it of(items||[])){ctx.fillStyle='#2563EB';ctx.fillRect(11*SC,y-5*SC,4*SC,4*SC);ctx.font=fnt(7.5);ctx.fillStyle='#fff';ctx.fillText((it||'').substring(0,28),19*SC,y);y+=12*SC;}
+    return y+4*SC;
+  }
+  sy=sbSec('Competences',d.competences,sy);ctx.strokeStyle='#334155';ctx.beginPath();ctx.moveTo(8*SC,sy);ctx.lineTo(sw-8*SC,sy);ctx.stroke();sy+=8*SC;
+  sy=sbSec('Langues',d.langues||['Francais'],sy);ctx.strokeStyle='#334155';ctx.beginPath();ctx.moveTo(8*SC,sy);ctx.lineTo(sw-8*SC,sy);ctx.stroke();sy+=8*SC;
+  ctx.font=fnt(6.5,true);ctx.fillStyle='#94A3B8';ctx.textAlign='left';ctx.fillText('CONTACT',8*SC,sy);sy+=12*SC;
+  const contacts=[d.telephone,d.email,d.adresse].filter(Boolean);
+  for(const c of contacts){ctx.font=fnt(7);ctx.fillStyle='#CBD5E1';ctx.fillText(c.substring(0,28),8*SC,sy);sy+=11*SC;}
+  const mx=sw+13*SC,mw=W-sw-20*SC;
+  ctx.font=fnt(19,true);ctx.fillStyle='#111827';ctx.textAlign='left';ctx.fillText(d.nom||'Candidat',mx,24*SC);
+  ctx.font=fnt(8);const ptxt=d.poste_cible||'';const pw=ctx.measureText(ptxt).width+16*SC;
+  ctx.fillStyle='#2563EB';rr(ctx,mx,30*SC,pw,15*SC,4*SC);ctx.fill();ctx.fillStyle='#fff';ctx.textBaseline='middle';ctx.fillText(ptxt,mx+8*SC,37.5*SC);ctx.textBaseline='alphabetic';
+  ctx.font=fnt(7,false,true);ctx.fillStyle='#6B7280';ctx.fillText(`Candidature : ${(d.offre_entreprise||d.poste_cible||'').substring(0,52)}`,mx,62*SC);
+  let my=78*SC;
+  function mSec(t){ctx.fillStyle='#2563EB';ctx.fillRect(mx,my,3*SC,16*SC);ctx.font=fnt(10,true);ctx.fillStyle='#111827';ctx.textAlign='left';ctx.fillText(t,mx+9*SC,my+11*SC);ctx.strokeStyle='#E2E8F0';ctx.lineWidth=0.4*SC;ctx.beginPath();ctx.moveTo(mx+9*SC,my+17*SC);ctx.lineTo(mx+mw,my+17*SC);ctx.stroke();my+=23*SC;}
+  mSec('Experiences professionnelles');
+  for(const exp of(d.experiences||[])){
+    ctx.fillStyle='#F1F5F9';rr(ctx,mx,my,mw,20*SC,3*SC);ctx.fill();
+    ctx.font=fnt(9,true);ctx.fillStyle='#111827';ctx.fillText((exp.titre||'').substring(0,48),mx+5*SC,my+12*SC);
+    ctx.font=fnt(8);ctx.fillStyle='#2563EB';ctx.fillText((exp.entreprise||'').substring(0,48),mx+5*SC,my+20.5*SC);
+    const dw=ctx.measureText(exp.date||'').width+10*SC;ctx.fillStyle='#2563EB';rr(ctx,mx+mw-dw-2*SC,my+4*SC,dw,13*SC,3*SC);ctx.fill();ctx.font=fnt(7);ctx.fillStyle='#fff';ctx.fillText(exp.date||'',mx+mw-dw+3*SC,my+13*SC);
+    my+=25*SC;
+    for(const b of(exp.bullets||[])){ctx.fillStyle='#2563EB';ctx.fillRect(mx+7*SC,my-4*SC,3*SC,3*SC);ctx.font=fnt(7.5);ctx.fillStyle='#374151';my=wt((b||'').substring(0,80),mx+14*SC,my,mw-18*SC,12*SC);}
+    my+=5*SC;
+  }
+  my+=5*SC;mSec('Formation');
+  for(const f of(d.formations||[])){
+    ctx.fillStyle='#F1F5F9';rr(ctx,mx,my,mw,20*SC,3*SC);ctx.fill();
+    ctx.font=fnt(9,true);ctx.fillStyle='#111827';ctx.fillText((f.diplome||'').substring(0,48),mx+5*SC,my+12*SC);
+    ctx.font=fnt(7.5);ctx.fillStyle='#6B7280';ctx.fillText(`${(f.ecole||'').substring(0,36)}  —  ${f.annee||''}`,mx+5*SC,my+20.5*SC);
+    const yw=ctx.measureText(f.annee||'').width+10*SC;ctx.fillStyle='#16A34A';rr(ctx,mx+mw-yw-2*SC,my+4*SC,yw,13*SC,3*SC);ctx.fill();ctx.font=fnt(7);ctx.fillStyle='#fff';ctx.fillText(f.annee||'',mx+mw-yw+3*SC,my+13*SC);my+=26*SC;
+  }
+}
+
+function copyText(id){const t=document.getElementById(id).textContent;navigator.clipboard.writeText(t).then(()=>{const b=event.target;b.textContent='Copié !';setTimeout(()=>b.textContent='Copier',2000);});}
+</script>
+</body>
+</html>
